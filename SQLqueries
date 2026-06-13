@@ -1,1 +1,106 @@
+PostgreSQL Analysis
 
+Created a table in PostgreSQL and imported the dataset from pycleantickets.ipynb,
+which had been cleaned in Python and saved as a CSV file
+
+CREATE TABLE Tickets_1 (
+ status VARCHAR(20),
+ ticket_id VARCHAR(20),
+ priority VARCHAR(10),
+ source VARCHAR(30),
+ topic VARCHAR(60),
+ agent_group VARCHAR(40),
+ agent_name VARCHAR(60),
+ created_time TIMESTAMP,
+ expected_sla_to_resolve TIMESTAMP,
+ expected_sla_to_first_response TIMESTAMP,
+ first_response_time TIMESTAMP,
+ sla_for_first_response VARCHAR(20),
+ resolution_time TIMESTAMP,
+ sla_for_resolution VARCHAR(20),
+ close_time TIMESTAMP,
+ agent_interactions INTEGER,
+ survey_results NUMERIC(3,1),
+ product_group VARCHAR(40),
+ country VARCHAR(40),
+ latitude NUMERIC(9,4),
+ longitude NUMERIC(9,4),
+ first_response_hours NUMERIC(10,2),
+ resolution_hours NUMERIC(10,2),
+ created_month VARCHAR(7),
+ created_weekday VARCHAR(10)
+);
+
+1. Checked Monthly ticket volume 
+
+SELECT DATE_TRUNC('month', "Created time") AS month,
+       COUNT(*) AS ticket_count
+FROM tickets_1
+GROUP BY month
+ORDER BY month;
+
+Intrepretation - Volume is pretty stable across the year between roughly 160 and 224 tickets a month. 
+January is the peak (224) and February the quietest (159), 
+but there's no dramatic seasonal swing, so I don't need to plan capacity around a busy season. 
+
+2.Tickets by weekday
+
+SELECT created_weekday,
+       COUNT(*) AS ticket_count
+FROM tickets_1
+GROUP BY created_weekday
+ORDER BY ticket_count DESC;
+
+Intrepretation - Wednesday is the busiest day (439 tickets) and the weekend is clearly the quietest (Saturday 165, Sunday 186). 
+The load concentrates mid week.
+
+3 Tickets by hour of day
+
+SELECT created_hour,
+       COUNT(*) AS ticket_count
+FROM tickets_1
+GROUP BY created_hour
+ORDER BY ticket_count DESC;
+
+Intrepretation - 3 PM (hour 15) is the single busiest hour at 135 tickets, with a secondary bump around 7 AM. 
+The afternoon peak is where I'd make sure the most agents are online that's the window
+most likely to put first response SLA at risk if we're understaffed.
+
+4 Resolution SLA compliance (Only Completed Tickets)
+
+SELECT ROUND(
+         100.0 * COUNT(*) FILTER (WHERE "SLA For Resolution" = 'Within SLA')
+         / COUNT(*), 1) AS resolution_sla_compliance_pct
+FROM tickets_1
+WHERE "Status" IN ('Closed', 'Resolved');
+
+Intrepretation - Among the 1,912 completed tickets (Closed and Resolved), 80.9% were resolved within SLA so roughly 1 in 5 completed tickets
+missed the resolution target.the 418 open/in-progress tickets don't have a resolution outcome yet, so including them would distort the rate.
+
+5 Resolution SLA the raw split
+
+SELECT "SLA For Resolution",
+       COUNT(*) AS tickets
+FROM tickets_1
+WHERE "Status" IN ('Closed', 'Resolved')
+GROUP BY "SLA For Resolution";
+
+Intrepretation - Breaking the 80.9% into counts: 1,546 resolved within SLA vs 366 violated
+The 366 SLA violations form the focus of the remaining analysis,the following analysis focuses on these 
+violations to identify key drivers and patterns, which will be showcased in the Power BI dashboard
+
+6 First-response SLA compliance (all tickets)
+
+SELECT "SLA For first response",
+       COUNT(*) AS tickets
+FROM tickets_1
+GROUP BY "SLA For first response";
+
+Intrepretation - 86.7% of tickets hit the first response SLA (2,019 within vs 311 violated)
+noticeably healthier than the resolution rate. The Team is good at responding quickly but weaker at closing within target. 
+That gap tells the bottleneck isn't initial responsiveness, it's resolution time, which is where I'd focus the operational fixes
+
+SUMMARY 
+Steady volume with mid week and mid afternoon peaks
+strong first response (86.7%) but about 1 in 5 resolutions breaching SLA (80.9% compliance). 
+In short: the team answers fast but struggles to close on time.
