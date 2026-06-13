@@ -28,7 +28,7 @@ Built across the full analytics workflow: **Excel → Python → SQL → Power B
 
 ## Tools used
 
-**Python** (data cleaning) · **PostgreSQL** (analysis) · **Power BI** (dashboard) · **Excel**
+**Python** (data cleaning) **PostgreSQL** (analysis) **Power BI** (dashboard) **Excel**
 
 ## What's in this repo
 
