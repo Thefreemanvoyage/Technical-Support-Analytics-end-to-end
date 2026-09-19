@@ -48,6 +48,42 @@ Preparing the dataset for SQL analysis and Power BI reporting
 | `SQLqueries` | SQL analysis queries |
 | `Technical Support Dashboard KPI Report.pbix` | Power BI dashboard |
 
+**Dashboard Preview**
+
+<img width="1307" height="730" alt="image" src="https://github.com/user-attachments/assets/446b75df-2a3e-4cc5-9d10-c75529fe6e7c" />
+
+
+<img width="1305" height="731" alt="image" src="https://github.com/user-attachments/assets/2501d093-be19-418a-b075-d0ca65c136aa" />
+
+An interactive Power BI dashboard was developed to monitor SLA performance and operational efficiency across the support center.
+
+# Dashboard Features
+
+SLA Resolution Tracking
+SLA First Response Tracking
+Ticket Volume Monitoring
+Priority-Based Performance Analysis
+Topic-Level SLA Violation Analysis
+Agent Group Performance Comparison
+Monthly Trend Analysis
+Interactive Slicers and Filters
+
+# Data Model
+
+The dashboard was built using multiple connected tables and a relational data model.
+Relationships were created between ticket records and supporting lookup data to enable dynamic filtering and KPI calculations across the report.
+
+# DAX Measures
+Custom DAX measures were created to calculate:
+SLA Resolution %
+SLA First Response %
+SLA Compliance %
+Total Tickets
+Finished Tickets
+SLA Violations
+Average Resolution Time
+
+
 # Key Business Impact
 This analysis helped identify the primary drivers of SLA breaches and highlighted operational opportunities to improve service performance, 
 resource allocation, and ticket resolution efficiency.
