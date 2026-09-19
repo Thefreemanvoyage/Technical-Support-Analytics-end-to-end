@@ -10,9 +10,9 @@ target, but only **81% are resolved on time** — about **1 in 5 tickets breache
 resolution SLA.
 
 The misses aren't random.** They cluster in **Pricing & licensing tickets**,
-chat-channel tickets**, and **medium-priority work** — while urgent (high-priority)
+chat channel tickets**, and **medium priority work** while urgent (high priority)
 tickets are actually handled best.
-**Demand peaks mid-week and mid-afternoon** (busiest on Wednesdays, around 3 PM) —
+**Demand peaks mid week and mid afternoon** (busiest on Wednesdays, around 3 PM) —
 useful for staffing.
 
 # What I recommended
